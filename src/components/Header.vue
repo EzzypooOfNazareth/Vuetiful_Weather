@@ -2,7 +2,7 @@
     <header class="header-banner">
         <img alt="Veutiful Logo" src="../assets/Veutiful-Logo.png" />
 
-        <input @keyup.enter="submitWeather" v-model="city" id="weather_input" type="text" placeholder="Enter city..." maxlength="25" />
+        <input @keyup.enter="submitWeather" v-model="city" id="weather_input" placeholder="Enter city name..." type="text" maxlength="25" />
     </header>
 </template>
 
@@ -11,13 +11,18 @@ export default {
   name: 'Header',
   data () {
     return {
-      city: 'Enter city name...'
+      city: ''
     }
   },
   methods: {
     submitWeather () {
       this.$store.commit('changeCity', this.city)
-      console.log(this.$store.state.city)
+      // console.log(this.$store.state)
+      this.$store.dispatch('getForecastPromise').then(result => {
+        // console.log(result)
+      })
+
+      this.city = ''
     }
   }
 }

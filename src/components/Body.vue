@@ -1,12 +1,15 @@
 <template>
-  <div class="body-container" :style="{ backgroundImage:  `url(${bgImage})` }">
+  <div class="body-container" :style="{ backgroundImage:  `url(${getImage})` }">
       <div class="overlay">
-          <h1 style="font-weight: bold; font-size: 36px; color: white;">Test</h1>
+          <ForecastComponent></ForecastComponent>
       </div>
   </div>
 </template>
 
 <script>
+import ForecastComponent from './ForecastComponent.vue'
+
+// Background image imports
 import Sunny from '../assets/Sunny-photo.jpg'
 import Cloudy from '../assets/Cloudy-photo.jpg'
 import Rainy from '../assets/Rainy-photo.jpg'
@@ -15,44 +18,29 @@ import Snowy from '../assets/Snowy-photo.jpg'
 
 export default {
   name: 'Body',
-  data () {
-    return {
-      bgImage: Sunny,
-      tempData: {
-        minTemp: 32,
-        maxTemp: 75,
-        currentTemp: 68,
-        humid: 25,
-        rainPercent: 0
-      }
-    }
+  components: {
+    ForecastComponent
   },
   created () {
-    this.$store.dispatch('getForecastPromise').then(result => {
-      var condition = result.forecastday[0].day.condition.text
-
-      this.tempData.minTemp = result.forecastday[0].day.mintemp_f
-      this.tempData.maxTemp = result.forecastday[0].day.maxtemp_f
-      this.tempData.currentTemp = result.forecastday[0].day.avgtemp_f
-      this.tempData.humid = result.forecastday[0].day.avghumidity
-      this.tempData.rainPercent = result.forecastday[0].day.daily_chance_of_rain
-      console.log(this.tempData)
-
-      this.determineImage(condition.toLowerCase())
-    })
+    this.$store.dispatch('getForecastPromise')
+  },
+  computed: {
+    getImage () {
+      return this.determineImage(this.$store.state.weatherForecast.forecastday[0].day.condition.text.toLowerCase())
+    }
   },
   methods: {
     determineImage (i) {
       if (i.includes('sunny')) {
-        this.bgImage = Sunny
+        return Sunny
       } else if (i.includes('cloudy')) {
-        this.bgImage = Cloudy
+        return Cloudy
       } else if (i.includes('rain')) {
-        this.bgImage = Rainy
+        return Rainy
       } else if (i.includes('thunder') || i.includes('storm')) {
-        this.bgImage = Stormy
+        return Stormy
       } else {
-        this.bgImage = Snowy
+        return Snowy
       }
     }
   }
@@ -72,7 +60,7 @@ export default {
 .overlay {
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;

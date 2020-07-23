@@ -14,11 +14,6 @@ export default {
   components: {
     Header,
     Body
-  },
-  methods: {
-    runTest () {
-      this.$store.dispatch('getForecast')
-    }
   }
 }
 </script>
@@ -29,6 +24,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
+  font-weight: 24px;
   overflow: hidden;
 }
 </style>
