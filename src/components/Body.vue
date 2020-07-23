@@ -17,15 +17,29 @@ export default {
   name: 'Body',
   data () {
     return {
-      bgImage: Sunny
+      bgImage: Sunny,
+      tempData: {
+        minTemp: 32,
+        maxTemp: 75,
+        currentTemp: 68,
+        humid: 25,
+        rainPercent: 0
+      }
     }
   },
   created () {
-    this.$store.dispatch('getForecast')
-  },
-  mounted () {
-    var condition = this.$store.state.weatherForecast.forecastday[0].day.condition.text
-    this.determineImage(condition.toLowerCase())
+    this.$store.dispatch('getForecastPromise').then(result => {
+      var condition = result.forecastday[0].day.condition.text
+
+      this.tempData.minTemp = result.forecastday[0].day.mintemp_f
+      this.tempData.maxTemp = result.forecastday[0].day.maxtemp_f
+      this.tempData.currentTemp = result.forecastday[0].day.avgtemp_f
+      this.tempData.humid = result.forecastday[0].day.avghumidity
+      this.tempData.rainPercent = result.forecastday[0].day.daily_chance_of_rain
+      console.log(this.tempData)
+
+      this.determineImage(condition.toLowerCase())
+    })
   },
   methods: {
     determineImage (i) {

@@ -16,24 +16,20 @@ const store = new Vuex.Store({
   mutations: {
     changeCity (state, newCity) {
       state.city = newCity
-    },
-    saveForecast (state, forecastData) {
-      state.weatherForecast = forecastData
     }
   },
   actions: {
-    getForecast ({ state, commit }) {
-      console.log('call made')
+    getForecastPromise ({ state }) {
       var route = `http://api.weatherapi.com/v1/forecast.json?key=${state.apiKey}&q=${state.city}&days=3`
 
-      try {
+      return new Promise((resolve, reject) => {
         axios.get(route).then(result => {
-          commit('saveForecast', result.data.forecast)
-          console.log('call successful')
+          // console.log(result.data.forecast.forecastday)
+          resolve(result.data.forecast)
+        }, error => {
+          reject(error)
         })
-      } catch (ex) {
-        console.log(ex)
-      }
+      })
     }
   }
 })
